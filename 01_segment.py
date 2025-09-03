@@ -34,7 +34,7 @@ MAX_PAGE_CHARS = int(os.environ.get("MAX_PAGE_CHARS", "4000"))
 
 # LLM (segmentation)
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
-GEMINI_API_KEY = "AIzaSyBcG4GNT04c6Zfm1nlT3w5NFngyMltHEJw"  # se non presente -> fallback Ollama
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")  # se non presente -> fallback Ollama
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "qwen2.5:7b-instruct-q5_K_M")
 LLM_RETRIES = int(os.environ.get("LLM_RETRIES", "2"))
 LLM_TIMEOUT = int(os.environ.get("LLM_TIMEOUT", "60"))
