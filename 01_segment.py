@@ -177,14 +177,7 @@ def call_ollama(prompt: str, payload_pages: dict) -> dict:
         return _json_loads_robust(repair["message"]["content"])
 
 
-def segment_document(pages_map: Dict[int, Dict[str, Any]], book_title: str) -> List[Dict[str, Any]]:
-    """
-    Segmenta il documento e include il titolo del libro nei metadati
-
-    Args:
-        pages_map: Mappa delle pagine estratte
-        book_title: Titolo/nome del libro da includere nelle citazioni
-    """
+def segment_document(pages_map: Dict[int, Dict[str, Any]]) -> List[Dict[str, Any]]:
     nums = sorted(pages_map.keys())
     all_secs: List[Dict[str, Any]] = []
     batch: List[Tuple[int, str]] = []
@@ -216,20 +209,14 @@ def segment_document(pages_map: Dict[int, Dict[str, Any]], book_title: str) -> L
                     try:
                         start, end = int(pages[0]), int(pages[1])
                         if start <= end:
-                            # ✅ AGGIUNGE IL NOME DEL LIBRO
-                            secs.append({
-                                "book_title": book_title,  # <-- NUOVO CAMPO
-                                "title": title,
-                                "pages": [start, end],
-                                "summary": summary,
-                                "keywords": keywords
-                            })
+                            secs.append(
+                                {"title": title, "pages": [start, end], "summary": summary, "keywords": keywords})
                     except Exception:
                         pass
             all_secs.extend(secs)
             batch, charcount = [], 0
 
-    # Resto della logica di merge invariata
+    # Ordina e compatta contigue simili
     def jaccard(a: List[str], b: List[str]) -> float:
         sa, sb = set(map(str.lower, a)), set(map(str.lower, b))
         inter = len(sa & sb);
